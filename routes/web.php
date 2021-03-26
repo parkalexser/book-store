@@ -21,4 +21,11 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+Route::group(['middleware' => ['role:superadmin']], function (){
+
+});
+
+Route::get('/index', [\App\Http\Controllers\SiteController::class, 'index'])->name('index');
+
+
 require __DIR__.'/auth.php';
