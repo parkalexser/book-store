@@ -47,4 +47,23 @@ class SiteController extends Controller
 
         return view('index', compact('booksFilter', 'booksPaginated', 'authors'));
     }
+
+    public function addCart(Request $request){
+
+
+        \Cart::session(auth()->user()->id)->add(array(
+            'id' => $request->input('book_id'),
+            'name' => $request->input('name'),
+            'price' => $request->input('price'),
+            'quantity' => 1
+        ));
+
+    }
+
+    public function getCartContent(){
+        \Cart::session(auth()->user()->id);
+//        dd(\Cart::getContent());
+
+        return view('getcartcontent');
+    }
 }

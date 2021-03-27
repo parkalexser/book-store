@@ -26,6 +26,8 @@ Route::group(['middleware' => ['role:superadmin']], function (){
 });
 
 Route::match(['get', 'post'], '/', [\App\Http\Controllers\SiteController::class, 'index'])->name('index');
+Route::post('/addcart', [\App\Http\Controllers\SiteController::class, 'addCart'])->name('addCart');
+Route::get('/getcartcontent', [\App\Http\Controllers\SiteController::class, 'getCartContent'])->name('getCartContent');
 
 
 require __DIR__.'/auth.php';
