@@ -25,7 +25,7 @@ Route::group(['middleware' => ['role:superadmin']], function (){
 
 });
 
-Route::get('/', [\App\Http\Controllers\SiteController::class, 'index'])->name('index');
+Route::match(['get', 'post'], '/', [\App\Http\Controllers\SiteController::class, 'index'])->name('index');
 
 
 require __DIR__.'/auth.php';
