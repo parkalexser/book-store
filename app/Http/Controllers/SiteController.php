@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class SiteController extends Controller
@@ -15,8 +16,11 @@ class SiteController extends Controller
 //        Role::create(['name' => 'superadmin']);
 //        Role::create(['name' => 'buyer']);
 
-//        dd(auth()->user()->assignRole('superadmin'));
+//        dd(auth()->user()->assignRole('buyer'));
 
-        return view('index');
+
+        $books = DB::table('books')->orderBy('created_at')->paginate(6);
+
+        return view('index', compact('books'));
     }
 }

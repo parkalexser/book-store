@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -25,7 +25,7 @@ Route::group(['middleware' => ['role:superadmin']], function (){
 
 });
 
-Route::get('/index', [\App\Http\Controllers\SiteController::class, 'index'])->name('index');
+Route::get('/', [\App\Http\Controllers\SiteController::class, 'index'])->name('index');
 
 
 require __DIR__.'/auth.php';
