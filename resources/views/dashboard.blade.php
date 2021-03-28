@@ -7,81 +7,79 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    You're logged in!
-                </div>
+                @section('content')
+                    @role('superadmin')
+                    <div class="row" style="padding: 10px">
+                        <div class="col-md-12">
+                            <h4>All Sales</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Order number</th>
+                                    <th scope="col">User</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Created</th>
+                                    <th scope="col">Books</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($allOrders as $item)
+                                    <tr>
+                                        <th scope="row">{{$item->id}}</th>
+                                        <td>{{$item->users->name}}</td>
+                                        <td>{{$item->total}}</td>
+                                        <td>{{$item->created_at}}</td>
+                                        <td>
+                                            @foreach(json_decode($item->books) as $item)
+                                                {{$item->name}}
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @else
+                        <div class="row" style="padding: 10px">
+                            <div class="col-md-12">
+                                <h4>My Shopping</h4>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Order number</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Created</th>
+                                        <th scope="col">Books</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($orders as $item)
+                                        <tr>
+                                            <th scope="row">{{$item->id}}</th>
+                                            <td>{{$item->total}}</td>
+                                            <td>{{$item->created_at}}</td>
+                                            <td>
+                                                @foreach(json_decode($item->books) as $item)
+                                                    {{$item->name}}
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                        @endrole
+
+                @endsection
             </div>
         </div>
     </div>
 
-    @section('content')
-        @role('superadmin')
-            <h4>All Sales</h4>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                </tr>
-                </tbody>
-            </table>
-        @else
-            <h4>My Shopping</h4>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                </tr>
-                </tbody>
-            </table>
-        @endrole
 
-    @endsection
 
 
 

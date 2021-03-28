@@ -12,4 +12,11 @@ class Books extends Model
     public function authors(){
         return $this->hasOne(Authors::class,'id', 'author_id');
     }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Orders::class, 'book_orders', 'book_id', 'order_id');
+    }
+
+
 }

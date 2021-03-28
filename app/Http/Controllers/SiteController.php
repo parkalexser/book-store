@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Books;
+use App\Models\Orders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -11,15 +12,14 @@ use Spatie\Permission\Models\Role;
 class SiteController extends Controller
 {
     public function index(Request $request){
-//        $user = Auth::user();
-//        dd($user);
+
 
 //        Role::create(['name' => 'superadmin']);
 //        Role::create(['name' => 'buyer']);
 
+//        dd(auth()->user()->assignRole('superadmin'));
 //        dd(auth()->user()->assignRole('buyer'));
-//        \Cart::clear();
-//        \Cart::session(auth()->user()->id)->clear();
+
 
         $books = Books::with(['authors'])->orderBy('created_at');
         $booksFilter = $books->get();
@@ -36,7 +36,7 @@ class SiteController extends Controller
 
         if ($request->isMethod('post')) {
             $books = Books::with(['authors']);
-//            dd($request->input());
+
             if(!empty($request->input('authorId'))){
                 $books->where('author_id', $request->input('authorId'));
             }
@@ -57,7 +57,6 @@ class SiteController extends Controller
 
     public function addCart(Request $request){
 
-//print_r($request->input());
         \Cart::session(auth()->user()->id)->add(array(
             'id' => $request->input('book_id'),
             'name' => $request->input('name'),
@@ -73,11 +72,43 @@ class SiteController extends Controller
     public function getCartContent(){
         \Cart::session(auth()->user()->id);
 
-//        \Cart::clear();
-//        \Cart::session(auth()->user()->id)->clear();
-//        dd(\Cart::session(auth()->user()->id)->getContent());
         $cartItems = \Cart::getContent();
 
         return view('getcartcontent', compact('cartItems'));
+    }
+
+    public function checkout(Request $request){
+
+        $id = DB::table('orders')->insertGetId([
+            'total' => $request->input('total'),
+            'status' => 0,
+            'user_id' => auth()->user()->id,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
+        foreach ($request->input('products') as $item){
+            DB::table('book_orders')->insert([
+                'order_id' => $id,
+                'book_id' => $item,
+                'quantity' => 1,
+                'sum' => DB::table('books')->where('id', $item)->value('price')
+            ]);
+        }
+        \Cart::clear();
+        \Cart::session(auth()->user()->id)->clear();
+        return redirect('success');
+    }
+
+    public function success(){
+
+
+        return view('success');
+    }
+
+    public function dashboard(){
+        $orders = Orders::with('users', 'books')->where('user_id', auth()->user()->id)->get();
+        $allOrders = Orders::with('users', 'books')->get();
+
+        return view('dashboard', compact('orders', 'allOrders'));
     }
 }

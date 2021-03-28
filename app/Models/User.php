@@ -12,6 +12,10 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
+    public function orders(){
+        return $this->belongsTo(Orders::class, 'user_id', 'id' );
+    }
+
     /**
      * The attributes that are mass assignable.
      *

@@ -13,21 +13,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/', function () {
-//    return view('welcome');
-//});
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::match(['get', 'post'], '/', [\App\Http\Controllers\SiteController::class, 'index'])->name('index');
+Route::get('/dashboard', [\App\Http\Controllers\SiteController::class, 'dashboard'])->name('dashboard');
 
 Route::group(['middleware' => ['role:superadmin']], function (){
 
 });
 
-Route::match(['get', 'post'], '/', [\App\Http\Controllers\SiteController::class, 'index'])->name('index');
-Route::post('/addcart', [\App\Http\Controllers\SiteController::class, 'addCart'])->name('addCart');
-Route::get('/getcartcontent', [\App\Http\Controllers\SiteController::class, 'getCartContent'])->name('getCartContent');
+Route::group(['middleware' => ['role:buyer']], function (){
+    Route::post('/addcart', [\App\Http\Controllers\SiteController::class, 'addCart'])->name('addCart');
+    Route::get('/getcartcontent', [\App\Http\Controllers\SiteController::class, 'getCartContent'])->name('getCartContent');
+    Route::post('/checkout',[\App\Http\Controllers\SiteController::class, 'checkout'])->name('checkout');
+    Route::get('/success',[\App\Http\Controllers\SiteController::class, 'success'])->name('success');
+
+});
+
 
 
 require __DIR__.'/auth.php';

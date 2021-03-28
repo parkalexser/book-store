@@ -33,19 +33,7 @@
                 {{ $slot }}
                 <div class="container">
                     <div class="row bg-white">
-                        <div class="col-md-3">
-                            <nav class="nav flex-column col-md-3">
-                                @role('buyer')
-                                <a class="nav-link" href="{{--{{route('')}}--}}">My shopping</a>
-
-                                @endrole
-
-                                @role('superadmin')
-                                <a class="nav-link" href="">All sales</a>
-                                @endrole
-                            </nav>
-                        </div>
-                        <div class="col-md-9">
+                        <div class="col-md-12">
                             @yield('content')
                         </div>
                     </div>
