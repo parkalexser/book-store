@@ -44,6 +44,15 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]));
 
+        $details = [
+            'title' => 'Mail from Book Store',
+            'body' => 'Congratulations! You registered on Book Store.'
+        ];
+
+        \Mail::to($request->email)->send(new \App\Mail\MyMail($details));
+
+
+
         event(new Registered($user));
 
         return redirect(RouteServiceProvider::HOME);

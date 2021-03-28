@@ -30,11 +30,20 @@
                         <button type="submit" class="btn btn-primary">Filter</button>
                     </form>
                     <hr>
-                    <a href="{{route('getCartContent')}}">
-                        <button type="button" class="btn btn-warning">
-                            Cart <span class="badge badge-light">{{\Cart::session(auth()->user()->id)->getContent()->count()}}</span>
-                        </button>
-                    </a>
+                    @if($userId == 'guest')
+                        <a href="{{route('login')}}">
+                            <button type="button" class="btn btn-warning">
+                                Login
+                            </button>
+                        </a>
+                    @else
+                        <a href="{{route('getCartContent')}}">
+                            <button type="button" class="btn btn-warning">
+                                Cart <span id="cartBadge" class="badge badge-light">{{\Cart::session($userId)->getContent()->count()}}</span>
+                            </button>
+                        </a>
+                    @endif
+
 
                 </div>
 
@@ -47,7 +56,7 @@
                                         <img class="card-img-top" src="{{asset('/thumbnail.png')}}" alt="Card image cap">
                                         <div class="card-body">
                                             <h4> <span id="name-{{$item->id}}" >{{$item->name}}</span> ({{$item->authors->name}})</h4>
-                                            <p class="card-text">{{$item->description}}</p>
+                                            <p id="desc-{{$item->id}}" class="card-text">{{$item->description}}</p>
 
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div class="btn-group">
@@ -77,8 +86,14 @@
 
         function addcart(id)
         {
+            var userId = '<?=$userId?>';
+            if(userId == 'guest'){
+                alert('Must login')
+            }
+
             var name = $('#name-'+id).text();
             var price = $('#price-'+id).text();
+            var desc = $('#desc-'+id).text();
 
             $.ajax({
                 type:'post',
@@ -86,13 +101,17 @@
                 data:{
                     book_id: id,
                     name: name,
+                    desc: desc,
                     price: price
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success:function(response) {
-                    $('#addcart-'+id).html("Added").attr('disabled','disabled');;
+                    $('#addcart-'+id).html("Added").attr('disabled','disabled');
+                    $('#cartBadge').text( +$('#cartBadge').text() + 1 );
+//                    console.log($('#cartBadge').text());
+
                 }
             });
 

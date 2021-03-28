@@ -18,11 +18,18 @@ class SiteController extends Controller
 //        Role::create(['name' => 'buyer']);
 
 //        dd(auth()->user()->assignRole('buyer'));
-
+//        \Cart::clear();
+//        \Cart::session(auth()->user()->id)->clear();
 
         $books = Books::with(['authors'])->orderBy('created_at');
         $booksFilter = $books->get();
         $booksPaginated = $books->paginate(6);
+        if (Auth::check()) {
+            $userId = auth()->user()->id;
+        }else{
+            $userId = 'guest';
+        }
+
 
 
         $authors = DB::table('authors')->get();
@@ -39,22 +46,25 @@ class SiteController extends Controller
             $booksPaginated = $books->paginate(6);
 
 
-            return view('index', compact('booksFilter', 'booksPaginated', 'authors'));
+            return view('index', compact('booksFilter', 'booksPaginated', 'authors', 'userId'));
         }
 
 
 
 
-        return view('index', compact('booksFilter', 'booksPaginated', 'authors'));
+        return view('index', compact('booksFilter', 'booksPaginated', 'authors', 'userId'));
     }
 
     public function addCart(Request $request){
 
-
+//print_r($request->input());
         \Cart::session(auth()->user()->id)->add(array(
             'id' => $request->input('book_id'),
             'name' => $request->input('name'),
             'price' => $request->input('price'),
+            'attributes' => [
+                'description' => $request->input('desc')
+            ],
             'quantity' => 1
         ));
 
@@ -62,8 +72,12 @@ class SiteController extends Controller
 
     public function getCartContent(){
         \Cart::session(auth()->user()->id);
-//        dd(\Cart::getContent());
 
-        return view('getcartcontent');
+//        \Cart::clear();
+//        \Cart::session(auth()->user()->id)->clear();
+//        dd(\Cart::session(auth()->user()->id)->getContent());
+        $cartItems = \Cart::getContent();
+
+        return view('getcartcontent', compact('cartItems'));
     }
 }
